@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model credencial {
+  id       Int    @default(autoincrement())
+  passHash String
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+}
+
+model servicio {
+  id                  Int                   @default(autoincrement())
+  descripcion         String
+  valor_unitario      Int
+  servicio_solicitado servicio_solicitado[] @relation("1Servicio_mSolicitudes")
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+  @@unique([descripcion])
+}
+
+model cliente {
+  id         Int          @default(autoincrement())
+  nombre     String
+  rut        String       @unique
+  email      String       @unique
+  telefono   Int
+  direccion  String
+  contacto   String
+  cotizacion cotizacion[] @relation("1Cliente_mCotizaciones")
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+}
+
+model cotizacion {
+  id                  Int                   @default(autoincrement())
+  number_id           Int
+  fecha               String
+  valido_hasta        String
+  cliente             cliente               @relation("1Cliente_mCotizaciones", fields: [cliente_id], references: [id])
+  cliente_id          Int
+  forma_pago          String
+  servicio_solicitado servicio_solicitado[] @relation("1Cotizacion_mSolicitudes")
+  anulada             Boolean
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+  @@unique([number_id])
+}
+
+model servicio_solicitado {
+  id            Int        @default(autoincrement())
+  cotizacion    cotizacion @relation("1Cotizacion_mSolicitudes", fields: [cotizacion_id], references: [id])
+  cotizacion_id Int
+  codigo        String
+  servicio      servicio   @relation("1Servicio_mSolicitudes", fields: [servicio_id], references: [id])
+  servicio_id   Int
+  cantidad      Int
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+}
+
+model proveedor {
+  id           Int    @default(autoincrement())
+  razon_social String @unique
+  rut          String @unique
+  giro         String
+  direccion    String
+  telefono     Int
+  email        String @unique
+  ciudad       String
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+}
+
+model acceso {
+  id Int @default(autoincrement())
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+}
