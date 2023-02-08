@@ -1,6 +1,5 @@
 import { prismaClient } from "../../server.js";
 import { getTodaysDateString } from "../../utils/index.js";
-import { IInputClienteData } from "../../models/input.js";
 import { Prisma } from "@prisma/client";
 
 export class ClientesDbClient {

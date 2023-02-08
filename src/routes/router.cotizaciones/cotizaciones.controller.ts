@@ -28,7 +28,7 @@ export const httpObtenerCotizacionPorFecha = async (req:Request, res:Response) =
     // }
     
     // const prismaResponse = await CotizacionesDbClient.getCotizacionesPorFecha(reqBody);
-    // return res.status(200).json(prismaResponse); 
+    return res.status(200).json(reqBody); 
 }
 
 export const httpObtenerCotizacionEspecifica = async (req:Request, res:Response) => {

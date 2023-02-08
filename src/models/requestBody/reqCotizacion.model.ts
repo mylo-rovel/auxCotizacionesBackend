@@ -56,11 +56,6 @@ export const bodyIsValidCotizacion = (reqBody: unknown): reqBody is ICotizacionR
         //? if it's a valid "CotizacionRecibida", it will have no problem
         const proxyInput = reqBody as ICotizacionRecibida;
 
-        const areSinglesValid = auxTestCotizacionSingleValues(proxyInput);
-        const isClienteDataValid = auxTestCotizacionClienteData(proxyInput.clienteData);
-        const areServiciosValid = auxTestCotizacionServiciosSolicitados(proxyInput.serviciosSolicitados);
-        console.log(areSinglesValid, isClienteDataValid, areServiciosValid);
-
         return (
             auxTestCotizacionSingleValues(proxyInput) && 
             auxTestCotizacionClienteData(proxyInput.clienteData) &&

@@ -72,7 +72,7 @@ model servicio_solicitado {
   cotizacion    cotizacion @relation("1Cotizacion_mSolicitudes", fields: [cotizacion_id], references: [id])
   cotizacion_id Int
   codigo        String
-  servicio      servicio   @relation("1Servicio_mSolicitudes", fields: [servicio_id], references: [id])
+  servicio      servicio   @relation("1Servicio_mSolicitudes", fields: [servicio_id], references: [id], onDelete: Cascade)
   servicio_id   Int
   cantidad      Int
 

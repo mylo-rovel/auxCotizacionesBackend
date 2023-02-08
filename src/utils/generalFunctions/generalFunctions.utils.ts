@@ -12,3 +12,10 @@ export const getTodaysDateString = () => {
     
     return `${nowDay}-${nowMonth}-${nowYear}`;
 }
+
+export const testIfRutIsValid = (rutStr: string): boolean => {
+    const regex = /^[\d]{8}(-)[\dkK]$/;
+    // const rutToUse = "12345678-k".toUpperCase();
+    const rutToUse = rutStr.toUpperCase();        
+    return (regex.test(rutToUse) && (rutToUse.length === 10));
+}
