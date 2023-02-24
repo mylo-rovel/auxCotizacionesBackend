@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { ServiciosDbClient } from "../../dbClient/index.js";
-import { bodyIsReceivedServicio, bodyIsServiciosPair } from "../../models/input.js"; 
+import { bodyIsReceivedServicio, bodyIsServiciosPair } from "../../models/index.js"; 
  
 export const httpGetListaServicios = async (_:Request, res:Response) => {
     console.log("Obteniendo lista de servicios");

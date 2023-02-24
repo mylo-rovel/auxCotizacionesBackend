@@ -1,4 +1,4 @@
-import { IInputClienteData} from '../input.js';
+import { IInputClienteData} from '../index.js';
 
 interface IReceivedServicioSolicitado {
     id: number;

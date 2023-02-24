@@ -1,7 +1,7 @@
 import { ClientesDbClient } from '../index.js';
 import { prismaClient } from '../../server.js';
 import { getTodaysDateString } from '../../utils/index.js';
-import { ICotizacionRecibida } from '../../models/input.js';
+import { ICotizacionRecibida } from '../../models/index.js';
 
 export class CotizacionesDbClient {
 
@@ -48,14 +48,14 @@ export class CotizacionesDbClient {
                 let targetClienteID = 0;
                 let todaysDateClientEntry = todaysDate; //? JUST AN AUXILIAR VAR
     
-                //* Si el cliente es nuevo, creamos un cliente casi vacío; las fechas se mantendrían
+                //* Si el cliente es nuevo, creamos un cliente casi vacío (casi pq sólo las fechas no se modificaran)
                 //* De esta forma, siempre actualizamos el cliente con los datos recibidos
                 if (clienteEsNuevo) {
                     const clienteConIDBueno = await ClientesDbClient.createEmptyClienteEntry(tx);
                     targetClienteID = clienteConIDBueno.id;
                     todaysDateClientEntry = clienteConIDBueno.updated_at;
                 } else {
-                    if (idClienteSiEsViejo === 0) return 'Error al registrar los servicios entregados. ID inválido'
+                    if (idClienteSiEsViejo === 0) return 'Error al registrar los servicios entregados. ID inválido';
                     targetClienteID = idClienteSiEsViejo;
                 }
                 
@@ -65,7 +65,7 @@ export class CotizacionesDbClient {
                     },
                     data: {
                         nombre: clienteData.nombre,
-                        rut: clienteData.rut,
+                        rut: clienteData.rut.toUpperCase(),
                         email: clienteData.email,
                         telefono: clienteData.telefono,
                         direccion: clienteData.direccion,

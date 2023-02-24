@@ -10,6 +10,11 @@ serviciosRouter.get("/", httpGetListaServicios);
 
 serviciosRouter.post("/crear", httpCreateServicio);
 
-serviciosRouter.patch("/modificar", httpModifyServicio);
+//todo: find out why this endpoint DOES NOT work if we
+//todo: use .patch() or .delete() methods
+//todo: somehow, only .get() and .post() methods work
+//? this should be .patch()
+serviciosRouter.post("/modificar", httpModifyServicio);
 
-serviciosRouter.delete("/borrar", httpDeleteServicio);
+//? this should be .delete()
+serviciosRouter.post("/borrar", httpDeleteServicio);

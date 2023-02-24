@@ -14,9 +14,9 @@ import {
 export const app: Express = express();
 
 app.use(helmet());
-app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan("combined"));
+app.use(cors(corsOptions));
 
 //! (checkLoggedIn) => route we want to protect
 //? --------------------   ROUTES   --------------------

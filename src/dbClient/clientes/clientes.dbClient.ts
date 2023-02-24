@@ -15,7 +15,8 @@ export class ClientesDbClient {
     public static async getListaRutsClientes() {
         return await prismaClient.cliente.findMany({
             select: {
-                rut: true,                
+                rut: true,
+                id: true
             }
         });
     }

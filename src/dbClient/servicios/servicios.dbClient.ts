@@ -1,6 +1,6 @@
 import { prismaClient } from "../../server.js";
 import { getTodaysDateString } from "../../utils/index.js";
-import { IReceivedServicio, serviciosPair } from "../../models/input.js";
+import { IReceivedServicio, serviciosPair } from "../../models/index.js";
 
 export class ServiciosDbClient {
     
@@ -10,7 +10,6 @@ export class ServiciosDbClient {
 
     public static async createServicio(reqBody: IReceivedServicio) {
         const todaysDate = getTodaysDateString();
-
         try {
             await prismaClient.servicio.create({
                 data: {
@@ -23,7 +22,8 @@ export class ServiciosDbClient {
     
             return 'Servicio CREADO exitosamente';
         }
-        catch {
+        catch(error) {
+            console.log('\n\n\n\n\n\n',error)
             return 'Error al crear el servicio enviado'
         }
     }
@@ -48,7 +48,8 @@ export class ServiciosDbClient {
     
             return 'Servicio MODIFICADO exitosamente';
         }
-        catch {
+        catch(error) {
+            console.log('\n\n\n\n\n\n',error)
             return 'Error al modificar el servicio enviado'
         }
     }
@@ -63,7 +64,8 @@ export class ServiciosDbClient {
     
             return 'Servicio ELIMINADO exitosamente';
         }
-        catch {
+        catch(error) {
+            console.log('\n\n\n\n\n\n',error)
             return 'Error al eliminar el servicio enviado'
         }
     }

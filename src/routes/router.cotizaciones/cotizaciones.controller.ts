@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import { CotizacionesDbClient } from '../../dbClient/index.js';
-import { bodyIsValidCotizacion } from '../../models/input.js'; 
+import { bodyIsValidCotizacion } from '../../models/index.js'; 
  
 export const httpGetListaCotizaciones = async (_:Request, res:Response) => {
     console.log('Obteniendo lista de cotizaciones');
