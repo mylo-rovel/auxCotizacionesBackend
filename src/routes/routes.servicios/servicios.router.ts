@@ -1,14 +1,16 @@
 import express, {Router} from "express";
 import { 
     httpGetListaServicios, httpCreateServicio, 
-    httpModifyServicio, httpDeleteServicio 
+    httpModifyServicio, httpDeleteServicio, httpGetServiciosPorID
 } from "./servicios.controller.js";
 
 export const serviciosRouter: Router = express.Router();
 
-serviciosRouter.get("/", httpGetListaServicios);
+serviciosRouter.get("/:fecha_objetivo", httpGetListaServicios);
 
-serviciosRouter.post("/crear", httpCreateServicio);
+serviciosRouter.get("/especificos/:id", httpGetServiciosPorID);
+
+serviciosRouter.post("/", httpCreateServicio);
 
 //todo: find out why this endpoint DOES NOT work if we
 //todo: use .patch() or .delete() methods

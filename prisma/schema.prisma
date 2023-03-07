@@ -20,19 +20,6 @@ model credencial {
   @@id([id])
 }
 
-model servicio {
-  id                  Int                   @default(autoincrement())
-  descripcion         String
-  valor_unitario      Int
-  servicio_solicitado servicio_solicitado[] @relation("1Servicio_mSolicitudes")
-
-  created_at String
-  updated_at String
-
-  @@id([id])
-  @@unique([descripcion])
-}
-
 model cliente {
   id         Int          @default(autoincrement())
   nombre     String
@@ -41,6 +28,8 @@ model cliente {
   telefono   Int
   direccion  String
   contacto   String
+  //* 1 documento cotizacion sólo puede tener 1 cliente
+  //* 1 cliente puede tener +1 documentos de cotizacion
   cotizacion cotizacion[] @relation("1Cliente_mCotizaciones")
 
   created_at String
@@ -49,15 +38,54 @@ model cliente {
   @@id([id])
 }
 
+model servicio_realizado {
+  id                Int    @default(autoincrement())
+  detalle_servicio  String
+  equipo            String
+  codigo            String
+  info_adicional    String
+  valor             Int
+  fecha_realizacion String //* CAMPO IMPORTANTE
+
+  //* Documentos que incluye cliente y trabajos realizados
+  servicio_solicitado servicio_por_cotizacion[] @relation("1Servicio_mCotizaciones")
+
+  //* Documentos que simplemente agrupan trabajos
+  agrupacion_trabajos agrupacion_trabajos[] @relation("mAgrupaciones_mServiciosRealizados")
+
+  created_at String
+  updated_at String
+
+  @@id([id])
+}
+
+model servicio_por_cotizacion {
+  //* ACÁ GUARDAMOS LOS SERVICIOS QUE SE REGISTRARON EN CADA DOCUMENTO PDF COTIZACION
+  //* ESTO ES PARA PODER RECONSTRUIR EL DOCUMENTO (DATOS COTIZACIÓN + LOS TRABAJOS)
+  id Int @default(autoincrement())
+
+  //* 1 documento cotizacion puede tener +0 servicios y viceversa
+  cotizacion_id Int
+  cotizacion    cotizacion @relation("1Cotizacion_mServiciosRealizados", fields: [cotizacion_id], references: [id], onDelete: Cascade)
+
+  //* Necesitamos una referencia a los trabajos realizados
+  servicio_id Int
+  servicio    servicio_realizado @relation("1Servicio_mCotizaciones", fields: [servicio_id], references: [id], onDelete: Cascade)
+
+  @@id([id])
+}
+
 model cotizacion {
-  id                  Int                   @default(autoincrement())
+  id                  Int                       @default(autoincrement())
   number_id           Int
   fecha               String
   valido_hasta        String
-  cliente             cliente               @relation("1Cliente_mCotizaciones", fields: [cliente_id], references: [id])
+  //* 1 documento cotizacion sólo puede tener 1 cliente
   cliente_id          Int
+  cliente             cliente                   @relation("1Cliente_mCotizaciones", fields: [cliente_id], references: [id])
+  //* 1 documento cotizacion puede tener +0 servicios
+  servicio_solicitado servicio_por_cotizacion[] @relation("1Cotizacion_mServiciosRealizados")
   forma_pago          String
-  servicio_solicitado servicio_solicitado[] @relation("1Cotizacion_mSolicitudes")
   anulada             Boolean
 
   created_at String
@@ -67,14 +95,12 @@ model cotizacion {
   @@unique([number_id])
 }
 
-model servicio_solicitado {
-  id            Int        @default(autoincrement())
-  cotizacion    cotizacion @relation("1Cotizacion_mSolicitudes", fields: [cotizacion_id], references: [id])
-  cotizacion_id Int
-  codigo        String
-  servicio      servicio   @relation("1Servicio_mSolicitudes", fields: [servicio_id], references: [id], onDelete: Cascade)
-  servicio_id   Int
-  cantidad      Int
+model agrupacion_trabajos {
+  //* Documentos que simplemente agrupan trabajos
+  id    Int    @default(autoincrement())
+  fecha String
+
+  agrupacion_trabajos servicio_realizado[] @relation("mAgrupaciones_mServiciosRealizados")
 
   created_at String
   updated_at String

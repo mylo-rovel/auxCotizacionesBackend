@@ -1,23 +1,47 @@
+//PRISMA SCHEMA model servicio_realizado
+/*
+  id                Int    @default(autoincrement())
+  detalle_servicio  String
+  equipo            String
+  codigo            String
+  info_adicional    String
+  valor             Int
+  fecha_realizacion String
+*/
+
 export interface IReceivedServicio {
-    descripcion: string;
-    valor_unitario: number;
+    id:                 number;
+    detalle_servicio:   string;
+    equipo:             string;
+    codigo:             string;
+    info_adicional:     string;
+    valor:              number;
+    fecha_realizacion:  string;
 }
 
-export type serviciosPair = {
-    old_servicio: IReceivedServicio,
-    new_servicio: IReceivedServicio
+export interface IIdJSON {
+    id: number;
 }
-
 
 export const bodyIsReceivedServicio = (reqBody: unknown): reqBody is IReceivedServicio => {
     try {
         //? if it's "receivedServicio", it will have no problem
         const proxyInput = reqBody as IReceivedServicio;
-        const proxyDescripcion = proxyInput.descripcion;
-        const proxyValorUnitario = proxyInput.valor_unitario;
+        //* 'destructuring' the object
+        const proxyDetalleServicio = proxyInput.detalle_servicio;
+        const proxyEquipo = proxyInput.equipo;
+        const proxyCodigo = proxyInput.codigo;
+        const proxyInfoAdicional = proxyInput.info_adicional;
+        const proxyValor = proxyInput.valor;
+        const proxyFecha = proxyInput.fecha_realizacion;
+
         return (
-            (typeof proxyDescripcion === 'string') && 
-            (typeof proxyValorUnitario === 'number')
+            (typeof proxyDetalleServicio === 'string') &&
+            (typeof proxyEquipo === 'string') &&
+            (typeof proxyCodigo === 'string') &&
+            (typeof proxyInfoAdicional === 'string') &&
+            (typeof proxyValor === 'number') &&
+            (typeof proxyFecha === 'string')
         )
     }
     catch {
@@ -26,26 +50,16 @@ export const bodyIsReceivedServicio = (reqBody: unknown): reqBody is IReceivedSe
     }
 }
 
-export const bodyIsServiciosPair = (reqBody: unknown): reqBody is serviciosPair => {
+
+export const bodyIsIdJSON = (reqBody: unknown): reqBody is IIdJSON => {
     try {
-        //? if it's "serviciosTuple", it will have no problem
-        const proxyInput = reqBody as serviciosPair;
+        //? if it's "IIdJSON", it will have no problem
+        const proxyInput = reqBody as IIdJSON;
 
-        const oldServicio = proxyInput.old_servicio;
-        const newServicio = proxyInput.new_servicio;
-
-        const validOldServicio = (
-            (typeof oldServicio.descripcion === 'string') && 
-            (typeof oldServicio.valor_unitario === 'number')
-        )
-        const validNewServicio = (
-            (typeof newServicio.descripcion === 'string') && 
-            (typeof newServicio.valor_unitario === 'number')
-        )
-        return validOldServicio && validNewServicio;
+        return (typeof proxyInput.id === 'number');
     }
     catch {
-        console.log("reqBody no era serviciosTuple")
+        console.log("reqBody no era IdJSON")
         return false;
     }
 }

@@ -77,3 +77,26 @@ export const proveedorDataObjIsValid = (proveedorBaseData: proveedorBaseData): b
     }
     return true;
 }
+
+
+export const fechaStrIsValid = (fechaStr: string): boolean => {
+    try {
+        //? IF SOMETHING FAILS AND GIVE US AN ERROR, WE WILL RETURN false AS RETURN VALUE
+        //* declaring the array as unknown[] allow us to change the elements type
+        const proxyFechaInputArr: unknown[] = fechaStr.split('-');
+        if (!(proxyFechaInputArr.length === 3)) return false;
+        
+        const fechaDay = Number(proxyFechaInputArr[0]);
+        const fechaMonth = Number(proxyFechaInputArr[1]);
+        const fechaYear = Number(proxyFechaInputArr[2]);
+
+        return (
+            ((fechaDay   > 0) && (fechaDay   < 32))     &&
+            ((fechaMonth > 0) && (fechaMonth < 13))     &&
+            ((fechaYear  > 0) && (fechaYear  < 9999))
+        );
+    }
+    catch {
+        return false;
+    }
+}

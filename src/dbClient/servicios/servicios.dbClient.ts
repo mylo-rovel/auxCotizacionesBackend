@@ -1,72 +1,88 @@
 import { prismaClient } from "../../server.js";
+import { IReceivedServicio } from "../../models/index.js";
 import { getTodaysDateString } from "../../utils/index.js";
-import { IReceivedServicio, serviciosPair } from "../../models/index.js";
 
 export class ServiciosDbClient {
     
-    public static async getListaServicios() {
-        return await prismaClient.servicio.findMany();
+    public static async getListaServicios(fechaObjetivo: string) {
+        return await prismaClient.servicio_realizado.findMany({
+            where: {
+                fecha_realizacion: fechaObjetivo
+            }
+        });
+    }
+
+    public static async getServiciosPorID(id: number) {
+        return await prismaClient.servicio_realizado.findUnique({
+            where: {
+                id
+            }
+        });
     }
 
     public static async createServicio(reqBody: IReceivedServicio) {
         const todaysDate = getTodaysDateString();
         try {
-            await prismaClient.servicio.create({
+            await prismaClient.servicio_realizado.create({
                 data: {
-                    descripcion: reqBody.descripcion,
-                    valor_unitario: reqBody.valor_unitario,
+                    detalle_servicio: reqBody.detalle_servicio, 
+                    equipo: reqBody.equipo,           
+                    codigo: reqBody.codigo,
+                    info_adicional: reqBody.info_adicional,
+                    valor: reqBody.valor,
+                    fecha_realizacion: reqBody.fecha_realizacion,
                     created_at: todaysDate,
                     updated_at: todaysDate
                 }
               })
     
-            return 'Servicio CREADO exitosamente';
+            return 'Registro de trabajo CREADO exitosamente';
         }
         catch(error) {
             console.log('\n\n\n\n\n\n',error)
-            return 'Error al crear el servicio enviado'
+            return 'Error al crear el registro de trabajo'
         }
     }
 
-    public static async modifyServicio(reqBody: serviciosPair) {
+    public static async modifyServicio(reqBody: IReceivedServicio) {
         const todaysDate = getTodaysDateString();
-
-        const oldServicio = reqBody.old_servicio;
-        const newServicio = reqBody.new_servicio;
-        
         try {
-            await prismaClient.servicio.update({
+            await prismaClient.servicio_realizado.update({
                 where: {
-                  descripcion: oldServicio.descripcion,              
+                  id: reqBody.id
                 },
                 data: {
-                  descripcion: newServicio.descripcion,
-                  valor_unitario: newServicio.valor_unitario,
-                  updated_at: todaysDate
+                    detalle_servicio: reqBody.detalle_servicio, 
+                    equipo: reqBody.equipo,           
+                    codigo: reqBody.codigo,
+                    info_adicional: reqBody.info_adicional,
+                    valor: reqBody.valor,
+                    fecha_realizacion: reqBody.fecha_realizacion,
+                    updated_at: todaysDate
                 },
               })
-    
-            return 'Servicio MODIFICADO exitosamente';
+
+              return 'Registro de trabajo MODIFICADO exitosamente';
         }
         catch(error) {
             console.log('\n\n\n\n\n\n',error)
-            return 'Error al modificar el servicio enviado'
+            return 'Error al modificar el registro de trabajo referenciado'
         }
     }
 
-    public static async deleteServicio(reqBody: IReceivedServicio) {
+    public static async deleteServicio(idToDelete: number) {
         try {
-            await prismaClient.servicio.delete({
+            await prismaClient.servicio_realizado.delete({
                 where: {
-                    descripcion: reqBody.descripcion
+                    id: idToDelete
                 }
               })
     
-            return 'Servicio ELIMINADO exitosamente';
+            return 'Registro de trabajo ELIMINADO exitosamente';
         }
         catch(error) {
             console.log('\n\n\n\n\n\n',error)
-            return 'Error al eliminar el servicio enviado'
+            return 'Error al eliminar el registro de trabajo referenciado'
         }
     }
 }

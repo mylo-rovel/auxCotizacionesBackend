@@ -17,6 +17,7 @@ export class CotizacionesDbClient {
         )
     }
 
+    //? LA IDEA ES QUE SEPAMOS LA ID LUEGO DE HABER BUSCADO POR FECHA
     public static async getCotizacionEspecifica(targetID: number) {
         return await prismaClient.cotizacion.findUnique({
             where: {
@@ -24,7 +25,8 @@ export class CotizacionesDbClient {
             }
         })
     }
-
+    
+    //? LA IDEA ES QUE BUSCANDO POR FECHA OBTENGAMOS LA ID ESPECÍFICA BUSCADA
     public static async getCotizacionesPorFecha(fechaCreacion: string) {
         return await prismaClient.cotizacion.findMany({
             where: {
@@ -98,20 +100,19 @@ export class CotizacionesDbClient {
                 const listaServiciosRegistrar = serviciosSolicitados.map((servicioSolicitado) => {
                         return {
                             cotizacion_id: cotizacionID,
-                            codigo: servicioSolicitado.codigo,
                             servicio_id: servicioSolicitado.id,
-                            cantidad:servicioSolicitado.cantidad,
+                            
                             created_at: todaysDate,
                             updated_at: todaysDate
                         }
                     }
                 )
-    
-                await tx.servicio_solicitado.createMany({
+
+                await tx.servicio_por_cotizacion.createMany({
                     data: listaServiciosRegistrar
                 });
     
-                return 'Servicios realizados guardados EXITOSAMENTE';
+                return 'Datos del documento guardados EXITOSAMENTE';
             })
         }
         catch {

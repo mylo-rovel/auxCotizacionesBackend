@@ -1,0 +1,1 @@
+export const newTrabajoReceived_expectedID = -1;
