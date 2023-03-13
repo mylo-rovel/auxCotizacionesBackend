@@ -2,22 +2,18 @@ import { Request, Response } from 'express';
 
 import { CotizacionesDbClient } from '../../dbClient/index.js';
 import { bodyIsValidCotizacion } from '../../models/index.js'; 
+import { testIfRutIsValid } from '../../utils/index.js';
  
+
+//* ---------------------------------------------------------------------------------------
+//* ---------------------------------------------------------------------------------------
+//* GET - REQUESTS -----------------------------------------------------------------------
+
 export const httpGetListaCotizaciones = async (_:Request, res:Response) => {
     console.log('Obteniendo lista de cotizaciones');
 
     const listaServicios = await CotizacionesDbClient.getListaCotizaciones();
     return res.status(200).json(listaServicios);
-}
-
-export const httpRegistrarCotizacion = async (req:Request, res:Response) => {
-    const reqBody = req.body;
-    if (!(bodyIsValidCotizacion(reqBody))) {
-        return res.status(400).json('Cotización enviada no válida'); 
-    }
-    
-    const prismaResponse = await CotizacionesDbClient.registrarCotizacion(reqBody);
-    return res.status(200).json(prismaResponse); 
 }
 
 export const httpObtenerCotizacionPorFecha = async (req:Request, res:Response) => {
@@ -41,5 +37,29 @@ export const httpObtenerCotizacionEspecifica = async (req:Request, res:Response)
     }
     
     const prismaResponse = await CotizacionesDbClient.getCotizacionEspecifica(cotiID);
+    return res.status(200).json(prismaResponse); 
+}
+
+
+
+//* ---------------------------------------------------------------------------------------
+//* ---------------------------------------------------------------------------------------
+//* POST - REQUESTS -----------------------------------------------------------------------
+
+export const httpRegistrarCotizacion = async (req:Request, res:Response) => {
+    const reqBody = req.body;
+    console.log('reqBody', reqBody);
+    
+    if (!(bodyIsValidCotizacion(reqBody))) {
+        return res.status(400).json('Cotización enviada no válida'); 
+    }
+    
+    const receivedRutIsValid = testIfRutIsValid(reqBody.clienteData.rut);
+    //* IF IS NOT VALID, REPLACE IT WITH AN EMPTY STRING => LATER WE WILL HANDLE IT
+    if (!receivedRutIsValid) {
+        reqBody.clienteData.rut = '';
+    }
+
+    const prismaResponse = await CotizacionesDbClient.registrarCotizacion(reqBody);
     return res.status(200).json(prismaResponse); 
 }

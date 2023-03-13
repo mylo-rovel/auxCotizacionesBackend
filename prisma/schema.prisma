@@ -23,8 +23,10 @@ model credencial {
 model cliente {
   id         Int          @default(autoincrement())
   nombre     String
-  rut        String       @unique
-  email      String       @unique
+  // rut        String       @unique
+  // email      String       @unique
+  rut        String
+  email      String
   telefono   Int
   direccion  String
   contacto   String
@@ -71,6 +73,9 @@ model servicio_por_cotizacion {
   //* Necesitamos una referencia a los trabajos realizados
   servicio_id Int
   servicio    servicio_realizado @relation("1Servicio_mCotizaciones", fields: [servicio_id], references: [id], onDelete: Cascade)
+
+  created_at String
+  updated_at String
 
   @@id([id])
 }

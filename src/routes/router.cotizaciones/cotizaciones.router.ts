@@ -10,8 +10,8 @@ export const cotizacionesRouter: Router = express.Router();
 
 cotizacionesRouter.get('/', httpGetListaCotizaciones);
 
-cotizacionesRouter.post('/registros', httpRegistrarCotizacion);
+cotizacionesRouter.get('/:coti_id', httpObtenerCotizacionEspecifica);
 
 cotizacionesRouter.get('/cotizaciones-por-fecha', httpObtenerCotizacionPorFecha);
 
-cotizacionesRouter.get('/:coti_id', httpObtenerCotizacionEspecifica);
+cotizacionesRouter.post('/', httpRegistrarCotizacion);

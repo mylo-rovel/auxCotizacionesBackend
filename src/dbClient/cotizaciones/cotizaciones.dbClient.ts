@@ -7,14 +7,18 @@ export class CotizacionesDbClient {
 
     public static async getListaCotizaciones() {
         return await prismaClient.cotizacion.findMany(
-            // {select: {
-            //     id: true,
-            //     fecha: true,
-            //     valido_hasta: true,
-            //     created_at: true,
-            //     cliente_id: true,
-            // }}
-        )
+            {
+                // select: {
+                //     id: true,
+                //     fecha: true,
+                //     valido_hasta: true,
+                //     created_at: true,
+                //     cliente_id: true,
+                // },
+                include: {
+                    servicio_solicitado: true                    
+                }
+        })
     }
 
     //? LA IDEA ES QUE SEPAMOS LA ID LUEGO DE HABER BUSCADO POR FECHA
@@ -22,6 +26,9 @@ export class CotizacionesDbClient {
         return await prismaClient.cotizacion.findUnique({
             where: {
                 id: targetID
+            },
+            include: {
+                servicio_solicitado: true                    
             }
         })
     }
@@ -61,13 +68,19 @@ export class CotizacionesDbClient {
                     targetClienteID = idClienteSiEsViejo;
                 }
                 
+                //* DADO QUE EL RUT NO ES OBLIGATORIO, EXISTE LA CHANCE DE QUE VENGA VACÍO
+                //* SI VIENE VACÍO, CREAMOS UN VALOR PARA RELLENAR
+                //* SI NO VIENE VACÍO, ENTONCES EL RUT ES VÁLIDO
+                const defaultRutValue = `idCliente_${targetClienteID}`;
+                const rutGuardar = (clienteData.rut !== '') ? clienteData.rut.toUpperCase() : defaultRutValue;
+
                 const clienteGuardar = await tx.cliente.update({
                     where: {
                         id: targetClienteID
                     },
                     data: {
                         nombre: clienteData.nombre,
-                        rut: clienteData.rut.toUpperCase(),
+                        rut: rutGuardar,
                         email: clienteData.email,
                         telefono: clienteData.telefono,
                         direccion: clienteData.direccion,
@@ -112,11 +125,13 @@ export class CotizacionesDbClient {
                     data: listaServiciosRegistrar
                 });
     
-                return 'Datos del documento guardados EXITOSAMENTE';
+                return String(cotizacionID);
             })
         }
-        catch {
-            transactionResponse = 'Error al registrar los servicios entregados'
+        catch (err){
+            transactionResponse = 'Error al tratar de registrar la información entregada'
+            // transactionResponse = String(err);
+            console.log(String(err))
         }
         finally {
             return transactionResponse;
